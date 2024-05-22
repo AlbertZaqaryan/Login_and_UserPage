@@ -5,8 +5,11 @@
 {% block page_name %}Home page{% endblock %}
 {% block content %}
     {% if user.is_authenticated %}
-        <form action="" method="post">
+        <form method="post">
             {% csrf_token %}
+            <p>
+                <input type="hidden" name="who" value="{{ user.username }}" id="">
+            </p>
             <p>
                 <input type="text" name="product_name" placeholder="Product name" id="">
             </p>
@@ -15,5 +18,15 @@
             </p>
             <button type="submit">Add Product</button>
         </form>
+        <div>
+            {% for i in user_products %}
+                {% if user.username == i.username %}
+                    {% for j in i.user_prod.all %}
+                        <h5>{{ j.name }}</h5>
+                        <p>{{ j.price }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+        </div>
     {% endif %}
 {% endblock %}

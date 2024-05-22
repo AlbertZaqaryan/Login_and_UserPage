@@ -3,13 +3,24 @@ from .forms import NewUserForm
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import User
+from .models import Product
 
 # Create your views here.
 
 def index(request):
-    return render(request, 'main/index.html', context={
+	if request.method == 'POST':
+		who = request.POST.get('who')
+		current_user = User.objects.get(username=who)
+		product_name = request.POST.get('product_name')
+		product_price = request.POST.get('product_price')
+		Product.objects.create(who=current_user, name=product_name, price=product_price)
+		return redirect('index')
+	user_products = User.objects.all()
+	return render(request, 'main/index.html', context={
+		'user_products':user_products
 
-    })
+	})
 
 def register_request(request):
 	if request.method == "POST":
